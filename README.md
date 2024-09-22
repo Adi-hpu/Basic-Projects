@@ -7,3 +7,11 @@ In this project, I explored the basics of:<br>
 <li> Evaluation of the model's performance 💡
 
 I applied what I've learned in Python, using libraries like pandas, NumPy, scikit-learn, and matplotlib to predict sales based on historical data. The experience was rewarding and a great way to dive into real-world applications of machine learning!
+<h2><li>Requirements(Libraries)</li></h2>
+import pandas as pd
+import numpy as np
+import seaborn as sb
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, accuracy_score
