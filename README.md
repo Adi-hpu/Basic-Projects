@@ -1,4 +1,4 @@
-<h2><p align='center' style="color:rgb(10,151,23);> Sales Prediction From Existing Customer Using Logistic Regression </h2>
+<h2><p align='center' style="color:rgb(10,151,23);"> Sales Prediction From Existing Customer Using Logistic Regression </h2>
 Hey, This is my first beginner Project. In this Project i am using a dataset having features Age and Salary of Existing Customers data and Predict Whether the new Customer will Buy the Product or not.
 In this project, I explored the basics of:<br>
 <li> Data cleaning 🧹<br>
