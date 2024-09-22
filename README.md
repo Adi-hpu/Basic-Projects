@@ -8,10 +8,10 @@ In this project, I explored the basics of:<br>
 
 I applied what I've learned in Python, using libraries like pandas, NumPy, scikit-learn, and matplotlib to predict sales based on historical data. The experience was rewarding and a great way to dive into real-world applications of machine learning!
 <h3>Requirements(Libraries)</h3>
-import pandas as pd<br>
-import numpy as np<br>
-import seaborn as sb<br>
-import matplotlib.pyplot as plt<br>
-from sklearn.model_selection import train_test_split<br>
-from sklearn.linear_model import LogisticRegression<br>
-from sklearn.metrics import confusion_matrix, accuracy_score
+<li>import pandas as pd<br>
+<li>import numpy as np<br>
+<li>import seaborn as sb<br>
+<li>import matplotlib.pyplot as plt<br>
+<li>from sklearn.model_selection import train_test_split<br>
+<li>from sklearn.linear_model import LogisticRegression<br>
+<li>from sklearn.metrics import confusion_matrix, accuracy_score
