@@ -1,10 +1,9 @@
 <h2><p align='center'> Sales Prediction From Existing Customer Using Logistic Regression </h2>
-Hey, This is my first beginner Project 
-<li>
-In this project, I explored the basics of:
-- Data cleaning 🧹
-- Feature Scaling 
-- Model building with regression techniques -Logistic Regression📈
-- Evaluation of the model's performance 💡
+Hey, This is my first beginner Project. In this Project i am using a dataset having features Age and Salary of Existing Customers data and Predict Whether the new Customer will Buy the Product or not.
+In this project, I explored the basics of:<br>
+<li> Data cleaning 🧹<br>
+<li> Feature Scaling <br>
+<li> Model building with regression techniques -Logistic Regression📈
+<li> Evaluation of the model's performance 💡
 
 I applied what I've learned in Python, using libraries like pandas, NumPy, scikit-learn, and matplotlib to predict sales based on historical data. The experience was rewarding and a great way to dive into real-world applications of machine learning!
