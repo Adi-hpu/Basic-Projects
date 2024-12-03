@@ -1,0 +1,91 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sigmoid Activation Function
+def sigmoid(x):
+    x = np.array(x)  # Ensure x is a numpy array
+    return 1 / (1 + np.exp(-x))
+
+# Objective Function (Sphere function as an example)
+def objective_function(x):
+    return np.sum(np.square(x))
+
+# Initialize the PSO parameters
+nVar = 20  # Number of dimensions (variables)
+bounds = [0, 1]  # Binary bounds for BPSO
+noP = 30  # Number of particles
+maxIter = 500  # Maximum number of iterations
+wMax = 0.9  # Maximum inertia weight
+wMin = 0.2  # Minimum inertia weight
+c1 = 2  # Cognitive coefficient
+c2 = 2  # Social coefficient
+vMax = 0.2  # Maximum velocity
+vMin = -vMax  # Minimum velocity
+
+# Initialize the particles
+particles = []
+for _ in range(noP):
+    particle = {
+        "X": np.random.randint(0, 2, nVar),  # Random binary positions (0 or 1)
+        "V": np.zeros(nVar),  # Velocity initialized to zero
+        "PBEST_X": np.zeros(nVar),  # Personal best position
+        "PBEST_O": float('inf')  # Personal best objective value
+    }
+    particles.append(particle)
+
+# Initialize global best
+GBEST_X = np.zeros(nVar)
+GBEST_O = float('inf')
+
+# Store convergence curve for plotting
+cgCurve = []
+
+# Main optimization loop
+for t in range(maxIter):
+    w = wMax - t * ((wMax - wMin) / maxIter)  # Inertia weight adjustment
+
+    for particle in particles:
+        currentX = particle["X"]
+        currentO = objective_function(currentX)
+
+        # Update PBEST
+        if currentO < particle["PBEST_O"]:
+            particle["PBEST_X"] = currentX.copy()
+            particle["PBEST_O"] = currentO
+
+        # Update GBEST
+        if currentO < GBEST_O:
+            GBEST_X = currentX.copy()
+            GBEST_O = currentO
+
+        # Update velocity and position
+        r1 = np.random.rand(nVar)
+        r2 = np.random.rand(nVar)
+        cognitive = c1 * r1 * (particle["PBEST_X"] - particle["X"])
+        social = c2 * r2 * (GBEST_X - particle["X"])
+        particle["V"] = w * particle["V"] + cognitive + social
+
+        # Clamp velocities to vMin and vMax
+        particle["V"] = np.clip(particle["V"], vMin, vMax)
+
+        # Update positions using Sigmoid function
+        s = sigmoid(particle["V"])
+        particle["X"] = np.where(np.random.rand(nVar) < s, 1, 0)
+
+    # Record the best objective value found so far
+    cgCurve.append(GBEST_O)
+    print(f"Iteration {t + 1}: Best Objective = {GBEST_O}")
+
+# Plot the convergence curve
+plt.figure(figsize=(10, 6))
+plt.plot(cgCurve, label='Best Objective Value')
+plt.xlabel('Iteration')
+plt.ylabel('Objective Value')
+plt.title('Convergence Curve for BPSO')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+print("\nOptimal Solution Found:")
+print(f"Position: {GBEST_X}")
+print(f"Objective Value: {GBEST_O}")
