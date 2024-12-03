@@ -1,0 +1,101 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# SPHERE FUNCTION (Objective Function)
+def sphere(x):
+    return np.sum(np.square(x))
+
+# Particle Class
+class Particle:
+    def __init__(self, dim, bounds, w=0.5, c1=1.5, c2=1.5):
+        self.position = np.random.uniform(bounds[0], bounds[1], dim)  # Particle position
+        self.velocity = np.random.uniform(-1, 1, dim)                  # Particle velocity
+        self.best_position = np.copy(self.position)                    # Best position found by the particle
+        self.best_value = float('inf')                                 # Best value found by the particle
+        self.value = float('inf')                                      # Current value of the particle
+        self.w = w  # Inertia weight
+        self.c1 = c1  # Cognitive coefficient
+        self.c2 = c2  # Social coefficient
+
+    def update_velocity(self, global_best_position):
+        r1, r2 = np.random.rand(self.position.shape[0]), np.random.rand(self.position.shape[0])
+        inertia = self.w * self.velocity
+        cognitive = self.c1 * r1 * (self.best_position - self.position)
+        social = self.c2 * r2 * (global_best_position - self.position)
+        self.velocity = inertia + cognitive + social
+
+    def update_position(self, bounds):
+        self.position += self.velocity
+        # Clamp position to the bounds
+        self.position = np.clip(self.position, bounds[0], bounds[1])
+
+    def evaluate(self, objective):
+        self.value = objective(self.position)
+        # Update personal best if the current value is better
+        if self.value < self.best_value:
+            self.best_value = self.value
+            self.best_position = np.copy(self.position)
+
+# PSO Algorithm
+def PSO(objective, dim, bounds, n_particles, max_iter, w=0.5, c1=1.5, c2=1.5):
+    # Initialize particles
+    particles = [Particle(dim, bounds, w, c1, c2) for _ in range(n_particles)]
+
+    # Global best variables
+    global_best_position = np.zeros(dim)
+    global_best_value = float('inf')
+
+    # Store best values and positions for plotting
+    best_values = []
+
+    # Main optimization loop
+    for t in range(max_iter):
+        # Update particles
+        for particle in particles:
+            particle.evaluate(objective)
+            # Update global best
+            if particle.value < global_best_value:
+                global_best_value = particle.value
+                global_best_position = np.copy(particle.position)
+
+        # Update velocity and position for each particle
+        for particle in particles:
+            particle.update_velocity(global_best_position)
+            particle.update_position(bounds)
+
+        # Update inertia weight linearly over time
+        inertia_weight = 0.9 - ((0.9 - 0.4) / max_iter) * t
+        for particle in particles:
+            particle.w = inertia_weight
+
+        # Save best value for plotting
+        best_values.append(global_best_value)
+
+    # Plot the convergence graph
+    plot_convergence(best_values)
+
+    return global_best_position, global_best_value
+
+# Plot Convergence
+def plot_convergence(best_values):
+    """Plot the convergence of the PSO algorithm."""
+    plt.figure(figsize=(10, 6))
+    plt.plot(best_values, label="Best Value")
+    plt.xlabel('Iteration')
+    plt.ylabel('Objective Value')
+    plt.title('PSO Convergence with Inertia Weight Adjustment')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Example usage
+if __name__ == "__main__":
+    dim = 10                  # Number of dimensions
+    bounds = [-100, 100]      # Search space bounds
+    n_particles = 30          # Number of particles
+    max_iter = 1000           # Maximum iterations
+
+    best_position, best_value = PSO(sphere, dim, bounds, n_particles, max_iter)
+    print("\nOptimal Solution Found:")
+    print(f"Position: {best_position}")
+    print(f"Value: {best_value}")
