@@ -1,20 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Objective function
 def objective_function(x):
     return np.sum(x**2)
 
+# BPSO parameters
 num_particles = 30  # Number of particles
 num_iterations = 50  # Number of iterations
-dim = 12 # Number of dimensions
-bounds = [(-10, 10)] * dim  # Bounds for each of the 10 dimensions
+dim = 10  # Number of dimensions (can change based on the problem)
+bounds = [0, 1]  # Bounds for binary variables (0 or 1)
 inertia_weight = 0.5  # Inertia weight
 cognitive_coeff = 1.5  # Cognitive component c1
 social_coeff = 1.5  # Social component c2
 
-# Initialize particle positions and velocities
-positions = np.random.uniform(low=-10, high=10, size=(num_particles, dim))
-velocities = np.random.uniform(low=-1, high=1, size=(num_particles, dim))
+# Initialize particle positions and velocities (binary)
+positions = np.random.randint(2, size=(num_particles, dim))
+velocities = np.random.uniform(low=0, high=1, size=(num_particles, dim))
 
 # Initialize personal best and global best
 personal_best_positions = positions.copy()
@@ -25,7 +27,11 @@ global_best_value = np.min(personal_best_values)
 # Store the best value for plotting
 best_values = []
 
-# PSO loop
+# Sigmoid function for velocity update
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# BPSO loop
 for iteration in range(num_iterations):
     best_values.append(global_best_value)  # Record the best value so far
 
@@ -37,20 +43,18 @@ for iteration in range(num_iterations):
                          cognitive_coeff * r1 * (personal_best_positions[i] - positions[i]) +
                          social_coeff * r2 * (global_best_position - positions[i]))
         
-        # Update position
-        positions[i] += velocities[i]
-        
-        # Apply bounds
-        positions[i] = np.clip(positions[i], -10, 10)
-        
+        # Apply sigmoid function to determine binary positions
+        velocities[i] = sigmoid(velocities[i])
+        positions[i] = np.random.binomial(1, velocities[i])
+
         # Evaluate new position
         fitness = objective_function(positions[i])
-        
+
         # Update personal best
         if fitness < personal_best_values[i]:
             personal_best_positions[i] = positions[i]
             personal_best_values[i] = fitness
-    
+
     # Update global best
     if np.min(personal_best_values) < global_best_value:
         global_best_position = personal_best_positions[np.argmin(personal_best_values)]
@@ -59,7 +63,7 @@ for iteration in range(num_iterations):
 # Plot the progression of the global best value
 plt.figure(figsize=(7, 5))
 plt.plot(range(1, num_iterations + 1), best_values, marker="o", color="blue", label="Best Value")
-plt.title("PSO Optimization Progress")
+plt.title("BPSO Optimization Progress")
 plt.xlabel("Iteration")
 plt.ylabel("Objective Function Value")
 plt.grid(color="gray", linestyle="--", linewidth=0.5)
